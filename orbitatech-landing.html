@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OrbitaTech — Tecnologia que Orbita o Futuro</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Exo+2:ital,wght@0,300;0,400;0,600;0,800;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --blue-bright: #1a7fe8;
+    --blue-deep: #0d4fa0;
+    --blue-glow: #3399ff;
+    --silver: #b8c8d8;
+    --silver-light: #dde8f0;
+    --black: #000000;
+    --dark: #060c14;
+    --dark-card: #0b1520;
+    --dark-border: #0d2240;
+    --text-main: #c8dced;
+    --text-muted: #5a7a99;
+    --white: #ffffff;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--text-main);
+    font-family: 'Exo 2', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+  }
+
+  /* ── STAR FIELD ── */
+  .stars {
+    position: fixed; inset: 0; z-index: 0;
+    background:
+      radial-gradient(1px 1px at 10% 15%, rgba(255,255,255,.7) 0%, transparent 100%),
+      radial-gradient(1px 1px at 25% 40%, rgba(255,255,255,.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 40% 20%, rgba(255,255,255,.6) 0%, transparent 100%),
+      radial-gradient(1px 1px at 55% 60%, rgba(255,255,255,.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 70% 10%, rgba(255,255,255,.8) 0%, transparent 100%),
+      radial-gradient(1px 1px at 85% 45%, rgba(255,255,255,.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 92% 80%, rgba(255,255,255,.6) 0%, transparent 100%),
+      radial-gradient(1px 1px at 5%  75%, rgba(255,255,255,.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 60% 85%, rgba(255,255,255,.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 33% 90%, rgba(255,255,255,.3) 0%, transparent 100%),
+      radial-gradient(2px 2px at 78% 30%, rgba(100,180,255,.6) 0%, transparent 100%),
+      radial-gradient(2px 2px at 18% 55%, rgba(100,180,255,.4) 0%, transparent 100%);
+    pointer-events: none;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 60px;
+    background: linear-gradient(180deg, rgba(0,0,0,.95) 0%, rgba(0,0,0,.0) 100%);
+    backdrop-filter: blur(4px);
+  }
+
+  .nav-logo {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.6rem; font-weight: 700;
+    letter-spacing: 2px; color: var(--white);
+  }
+  .nav-logo span { color: var(--blue-bright); }
+
+  nav ul { list-style: none; display: flex; gap: 36px; }
+  nav ul a {
+    text-decoration: none;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: .95rem; font-weight: 600; letter-spacing: 1.5px;
+    color: var(--silver); text-transform: uppercase;
+    transition: color .2s;
+  }
+  nav ul a:hover { color: var(--blue-bright); }
+
+  .nav-cta {
+    padding: 10px 26px;
+    background: transparent;
+    border: 1.5px solid var(--blue-bright);
+    border-radius: 4px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: .9rem; font-weight: 700; letter-spacing: 1.5px;
+    color: var(--blue-bright); text-transform: uppercase; cursor: pointer;
+    transition: background .2s, color .2s;
+    text-decoration: none;
+  }
+  .nav-cta:hover { background: var(--blue-bright); color: var(--black); }
+
+  /* ── HERO ── */
+  #hero {
+    position: relative; z-index: 1;
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center;
+    padding: 120px 40px 80px;
+    overflow: hidden;
+  }
+
+  .hero-glow {
+    position: absolute; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 50% 40%, rgba(26,127,232,.18) 0%, transparent 70%),
+      radial-gradient(ellipse 30% 20% at 70% 20%, rgba(26,127,232,.08) 0%, transparent 70%);
+  }
+
+  /* Orbit ring decoration */
+  .orbit-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(26,127,232,.15);
+    animation: spin linear infinite;
+  }
+  .orbit-ring.r1 { width: 500px; height: 220px; top: 50%; left: 50%; transform: translate(-50%,-50%) rotateX(70deg); animation-duration: 20s; }
+  .orbit-ring.r2 { width: 700px; height: 300px; top: 50%; left: 50%; transform: translate(-50%,-50%) rotateX(70deg) rotateZ(30deg); animation-duration: 32s; border-color: rgba(184,200,216,.08); }
+  .orbit-ring.r3 { width: 900px; height: 390px; top: 50%; left: 50%; transform: translate(-50%,-50%) rotateX(70deg) rotateZ(-20deg); animation-duration: 48s; border-color: rgba(26,127,232,.06); }
+
+  @keyframes spin { from { transform: translate(-50%,-50%) rotateX(70deg) rotateZ(0deg); } to { transform: translate(-50%,-50%) rotateX(70deg) rotateZ(360deg); } }
+  .orbit-ring.r2 { animation-name: spin2; }
+  .orbit-ring.r3 { animation-name: spin3; }
+  @keyframes spin2 { from { transform: translate(-50%,-50%) rotateX(70deg) rotateZ(30deg); } to { transform: translate(-50%,-50%) rotateX(70deg) rotateZ(390deg); } }
+  @keyframes spin3 { from { transform: translate(-50%,-50%) rotateX(70deg) rotateZ(-20deg); } to { transform: translate(-50%,-50%) rotateX(70deg) rotateZ(340deg); } }
+
+  .hero-content { position: relative; z-index: 2; }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 6px 18px;
+    border: 1px solid var(--blue-deep);
+    border-radius: 100px;
+    background: rgba(26,127,232,.08);
+    font-size: .78rem; font-weight: 600; letter-spacing: 2px;
+    color: var(--blue-glow); text-transform: uppercase;
+    margin-bottom: 30px;
+    animation: fadeUp .8s ease both;
+  }
+  .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--blue-glow); box-shadow: 0 0 8px var(--blue-glow); animation: pulse 2s ease infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:.3;} }
+
+  .hero-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: clamp(3rem, 8vw, 7rem);
+    font-weight: 700;
+    line-height: .95;
+    letter-spacing: -1px;
+    color: var(--white);
+    animation: fadeUp .8s .15s ease both;
+  }
+  .hero-title .accent { color: var(--blue-bright); }
+  .hero-title .silver { color: var(--silver); }
+
+  .hero-sub {
+    max-width: 580px; margin: 24px auto 0;
+    font-size: 1.1rem; line-height: 1.7;
+    color: var(--text-muted);
+    animation: fadeUp .8s .3s ease both;
+  }
+
+  .hero-actions {
+    display: flex; gap: 16px; justify-content: center; margin-top: 44px;
+    animation: fadeUp .8s .45s ease both;
+  }
+
+  .btn-primary {
+    padding: 16px 40px;
+    background: linear-gradient(135deg, var(--blue-bright), var(--blue-deep));
+    border: none; border-radius: 6px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1rem; font-weight: 700; letter-spacing: 2px;
+    color: var(--white); text-transform: uppercase; cursor: pointer;
+    box-shadow: 0 0 30px rgba(26,127,232,.4);
+    transition: box-shadow .3s, transform .2s;
+    text-decoration: none;
+  }
+  .btn-primary:hover { box-shadow: 0 0 50px rgba(26,127,232,.6); transform: translateY(-2px); }
+
+  .btn-outline {
+    padding: 16px 36px;
+    background: transparent;
+    border: 1.5px solid rgba(184,200,216,.3);
+    border-radius: 6px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1rem; font-weight: 600; letter-spacing: 2px;
+    color: var(--silver); text-transform: uppercase; cursor: pointer;
+    transition: border-color .2s, color .2s;
+    text-decoration: none;
+  }
+  .btn-outline:hover { border-color: var(--blue-bright); color: var(--blue-bright); }
+
+  .hero-stats {
+    display: flex; gap: 64px; justify-content: center;
+    margin-top: 80px;
+    padding-top: 40px;
+    border-top: 1px solid rgba(26,127,232,.1);
+    animation: fadeUp .8s .6s ease both;
+  }
+  .stat-num {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 2.6rem; font-weight: 700;
+    color: var(--blue-bright);
+    line-height: 1;
+  }
+  .stat-label {
+    font-size: .78rem; font-weight: 400; letter-spacing: 1.5px;
+    color: var(--text-muted); text-transform: uppercase; margin-top: 6px;
+  }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ── SECTION COMMON ── */
+  section { position: relative; z-index: 1; padding: 100px 60px; }
+
+  .section-label {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: .78rem; font-weight: 700; letter-spacing: 3px;
+    color: var(--blue-bright); text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    font-weight: 700; line-height: 1.1;
+    color: var(--white); margin-bottom: 20px;
+  }
+  .section-title .accent { color: var(--blue-bright); }
+  .section-desc {
+    font-size: 1rem; line-height: 1.75;
+    color: var(--text-muted); max-width: 560px;
+  }
+
+  .divider {
+    width: 48px; height: 2px;
+    background: linear-gradient(90deg, var(--blue-bright), transparent);
+    margin: 18px 0 24px;
+  }
+
+  /* ── SOBRE A EMPRESA ── */
+  #sobre {
+    background: linear-gradient(180deg, #000 0%, #060c14 100%);
+  }
+  .sobre-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 80px; align-items: center; max-width: 1100px; margin: 0 auto;
+  }
+  .sobre-visual {
+    position: relative; display: flex; align-items: center; justify-content: center;
+    height: 400px;
+  }
+  .sobre-hex {
+    width: 260px; height: 260px;
+    background: linear-gradient(135deg, rgba(26,127,232,.15), rgba(13,79,160,.05));
+    border: 1px solid rgba(26,127,232,.3);
+    border-radius: 30px;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    box-shadow: 0 0 60px rgba(26,127,232,.1), inset 0 0 40px rgba(26,127,232,.05);
+  }
+  .sobre-hex::before {
+    content: '';
+    position: absolute; inset: -1px;
+    border-radius: 30px;
+    border: 1px solid transparent;
+    background: linear-gradient(135deg, rgba(26,127,232,.5), transparent, rgba(26,127,232,.2)) border-box;
+    -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: destination-out; mask-composite: exclude;
+  }
+  .sobre-icon { font-size: 5rem; }
+  .sobre-float {
+    position: absolute;
+    padding: 12px 20px;
+    background: rgba(11,21,32,.9);
+    border: 1px solid var(--dark-border);
+    border-radius: 10px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: .85rem; font-weight: 600; letter-spacing: 1px;
+    color: var(--silver);
+  }
+  .sobre-float.f1 { top: 30px; right: 10px; }
+  .sobre-float.f2 { bottom: 50px; left: -10px; }
+  .sobre-float .num { color: var(--blue-bright); font-size: 1.2rem; display: block; }
+
+  .sobre-values { margin-top: 36px; display: flex; flex-direction: column; gap: 16px; }
+  .value-item {
+    display: flex; align-items: flex-start; gap: 14px;
+    padding: 16px 20px;
+    background: rgba(11,21,32,.6);
+    border: 1px solid var(--dark-border);
+    border-radius: 8px;
+    transition: border-color .2s;
+  }
+  .value-item:hover { border-color: rgba(26,127,232,.4); }
+  .value-icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 2px; }
+  .value-text strong { display: block; color: var(--white); font-weight: 600; margin-bottom: 4px; }
+  .value-text span { font-size: .88rem; color: var(--text-muted); }
+
+  /* ── COMPETÊNCIAS ── */
+  #competencias {
+    background: var(--dark);
+  }
+  .comp-header { max-width: 1100px; margin: 0 auto 60px; }
+  .comp-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px; max-width: 1100px; margin: 0 auto;
+  }
+  .comp-card {
+    padding: 36px 30px;
+    background: rgba(11,21,32,.8);
+    border: 1px solid var(--dark-border);
+    border-radius: 12px;
+    position: relative; overflow: hidden;
+    transition: transform .25s, border-color .25s, box-shadow .25s;
+    cursor: default;
+  }
+  .comp-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--blue-bright), transparent);
+    opacity: 0; transition: opacity .3s;
+  }
+  .comp-card:hover { transform: translateY(-6px); border-color: rgba(26,127,232,.35); box-shadow: 0 20px 60px rgba(0,0,0,.4), 0 0 30px rgba(26,127,232,.08); }
+  .comp-card:hover::before { opacity: 1; }
+  .comp-ico {
+    width: 52px; height: 52px;
+    background: linear-gradient(135deg, rgba(26,127,232,.2), rgba(26,127,232,.05));
+    border: 1px solid rgba(26,127,232,.3);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem; margin-bottom: 20px;
+  }
+  .comp-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.15rem; font-weight: 700; letter-spacing: .5px;
+    color: var(--white); margin-bottom: 10px;
+  }
+  .comp-desc { font-size: .88rem; line-height: 1.65; color: var(--text-muted); }
+  .comp-skill-bar { margin-top: 20px; }
+  .skill-label { display: flex; justify-content: space-between; margin-bottom: 8px; }
+  .skill-label span { font-size: .75rem; font-weight: 600; letter-spacing: 1px; color: var(--silver); text-transform: uppercase; }
+  .skill-label .pct { color: var(--blue-bright); }
+  .bar-track { height: 3px; background: rgba(26,127,232,.1); border-radius: 2px; }
+  .bar-fill { height: 3px; border-radius: 2px; background: linear-gradient(90deg, var(--blue-deep), var(--blue-bright)); position: relative; }
+  .bar-fill::after { content: ''; position: absolute; right: 0; top: 50%; transform: translateY(-50%); width: 6px; height: 6px; border-radius: 50%; background: var(--blue-bright); box-shadow: 0 0 8px var(--blue-bright); }
+
+  /* ── PROFISSIONAIS ── */
+  #profissionais { background: var(--black); }
+  .prof-header { max-width: 1100px; margin: 0 auto 60px; }
+  .prof-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 24px; max-width: 1100px; margin: 0 auto;
+  }
+  .prof-card {
+    background: rgba(11,21,32,.7);
+    border: 1px solid var(--dark-border);
+    border-radius: 14px; overflow: hidden;
+    transition: transform .25s, box-shadow .25s;
+  }
+  .prof-card:hover { transform: translateY(-8px); box-shadow: 0 30px 80px rgba(0,0,0,.5), 0 0 40px rgba(26,127,232,.07); }
+  .prof-avatar {
+    height: 180px;
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, #060f1e, #0d2240);
+    font-size: 4.5rem;
+    position: relative;
+  }
+  .prof-avatar::after {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0; height: 40px;
+    background: linear-gradient(180deg, transparent, rgba(11,21,32,.7));
+  }
+  .prof-badge-role {
+    position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%);
+    padding: 3px 12px;
+    background: rgba(26,127,232,.2);
+    border: 1px solid rgba(26,127,232,.4);
+    border-radius: 100px;
+    font-size: .65rem; font-weight: 700; letter-spacing: 1.5px;
+    color: var(--blue-glow); text-transform: uppercase; white-space: nowrap;
+    z-index: 1;
+  }
+  .prof-info { padding: 22px 20px 24px; }
+  .prof-name {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.1rem; font-weight: 700; color: var(--white);
+    margin-bottom: 4px;
+  }
+  .prof-role { font-size: .8rem; color: var(--text-muted); margin-bottom: 14px; }
+  .prof-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag {
+    padding: 3px 10px;
+    background: rgba(26,127,232,.08);
+    border: 1px solid rgba(26,127,232,.2);
+    border-radius: 4px;
+    font-size: .7rem; font-weight: 600; letter-spacing: .5px;
+    color: var(--silver);
+  }
+
+  /* ── DEPOIMENTOS ── */
+  #depoimentos {
+    background: linear-gradient(180deg, #000 0%, #060c14 50%, #000 100%);
+  }
+  .dep-header { max-width: 1100px; margin: 0 auto 60px; }
+  .dep-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 24px; max-width: 1100px; margin: 0 auto;
+  }
+  .dep-card {
+    padding: 36px 30px;
+    background: rgba(11,21,32,.7);
+    border: 1px solid var(--dark-border);
+    border-radius: 14px;
+    position: relative;
+    transition: border-color .3s;
+  }
+  .dep-card:hover { border-color: rgba(26,127,232,.3); }
+  .dep-quote {
+    font-size: 3rem; line-height: 1;
+    color: var(--blue-deep);
+    font-family: Georgia, serif;
+    margin-bottom: 16px;
+  }
+  .dep-text {
+    font-size: .95rem; line-height: 1.75;
+    color: var(--text-muted);
+    font-style: italic;
+    margin-bottom: 28px;
+  }
+  .dep-author { display: flex; align-items: center; gap: 14px; }
+  .dep-ava {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--blue-deep), var(--blue-bright));
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.1rem; font-weight: 700; color: var(--white);
+    flex-shrink: 0;
+  }
+  .dep-name { font-family: 'Rajdhani', sans-serif; font-size: 1rem; font-weight: 700; color: var(--white); }
+  .dep-company { font-size: .78rem; color: var(--text-muted); margin-top: 2px; }
+  .stars-rating { color: #f4a700; font-size: .9rem; margin-top: 4px; letter-spacing: 2px; }
+
+  /* ── CTA ── */
+  #cta {
+    text-align: center;
+    background: var(--dark);
+    padding: 120px 60px;
+    position: relative; overflow: hidden;
+  }
+  .cta-glow {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 50% 80% at 50% 50%, rgba(26,127,232,.12) 0%, transparent 70%);
+  }
+  .cta-content { position: relative; z-index: 1; max-width: 680px; margin: 0 auto; }
+  .cta-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: clamp(2.4rem, 5vw, 4rem);
+    font-weight: 700; color: var(--white);
+    line-height: 1.1; margin-bottom: 20px;
+  }
+  .cta-title .accent { color: var(--blue-bright); }
+  .cta-desc { color: var(--text-muted); font-size: 1.05rem; line-height: 1.7; margin-bottom: 44px; }
+  .cta-form {
+    display: flex; gap: 12px; max-width: 480px; margin: 0 auto;
+  }
+  .cta-input {
+    flex: 1; padding: 16px 20px;
+    background: rgba(11,21,32,.8);
+    border: 1px solid var(--dark-border);
+    border-radius: 6px;
+    font-family: 'Exo 2', sans-serif;
+    font-size: .95rem; color: var(--white);
+    outline: none; transition: border-color .2s;
+  }
+  .cta-input::placeholder { color: var(--text-muted); }
+  .cta-input:focus { border-color: var(--blue-bright); }
+
+  /* ── FOOTER ── */
+  footer {
+    background: #000;
+    border-top: 1px solid rgba(26,127,232,.08);
+    padding: 60px 60px 36px;
+    position: relative; z-index: 1;
+  }
+  .footer-grid {
+    display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 48px; max-width: 1100px; margin: 0 auto 48px;
+  }
+  .footer-brand .logo-text {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.5rem; font-weight: 700;
+    color: var(--white); letter-spacing: 2px;
+    margin-bottom: 16px;
+  }
+  .footer-brand .logo-text span { color: var(--blue-bright); }
+  .footer-brand p { font-size: .88rem; line-height: 1.7; color: var(--text-muted); max-width: 280px; }
+  .footer-socials { display: flex; gap: 12px; margin-top: 24px; }
+  .social-btn {
+    width: 38px; height: 38px; border-radius: 8px;
+    background: rgba(26,127,232,.1);
+    border: 1px solid rgba(26,127,232,.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; color: var(--blue-bright);
+    text-decoration: none; transition: background .2s;
+  }
+  .social-btn:hover { background: rgba(26,127,232,.25); }
+  .footer-col h4 {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: .9rem; font-weight: 700; letter-spacing: 2px;
+    color: var(--white); text-transform: uppercase; margin-bottom: 20px;
+  }
+  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .footer-col ul li a {
+    text-decoration: none; font-size: .88rem;
+    color: var(--text-muted); transition: color .2s;
+  }
+  .footer-col ul li a:hover { color: var(--blue-bright); }
+  .footer-bottom {
+    max-width: 1100px; margin: 0 auto;
+    padding-top: 28px; border-top: 1px solid rgba(26,127,232,.07);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .footer-bottom p { font-size: .8rem; color: var(--text-muted); }
+  .footer-bottom .blue { color: var(--blue-bright); }
+  .footer-legal { display: flex; gap: 24px; }
+  .footer-legal a { font-size: .8rem; color: var(--text-muted); text-decoration: none; }
+  .footer-legal a:hover { color: var(--blue-bright); }
+
+  /* ── SCROLL ANIMATIONS ── */
+  .reveal { opacity: 0; transform: translateY(40px); transition: opacity .7s ease, transform .7s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+  .reveal-delay-1 { transition-delay: .1s; }
+  .reveal-delay-2 { transition-delay: .2s; }
+  .reveal-delay-3 { transition-delay: .3s; }
+  .reveal-delay-4 { transition-delay: .4s; }
+  .reveal-delay-5 { transition-delay: .5s; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    nav { padding: 18px 24px; }
+    nav ul { display: none; }
+    section { padding: 80px 24px; }
+    .sobre-grid { grid-template-columns: 1fr; gap: 40px; }
+    .comp-grid { grid-template-columns: 1fr 1fr; }
+    .prof-grid { grid-template-columns: 1fr 1fr; }
+    .dep-grid { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+    .hero-stats { gap: 32px; }
+    .cta-form { flex-direction: column; }
+  }
+  @media (max-width: 600px) {
+    .comp-grid { grid-template-columns: 1fr; }
+    .prof-grid { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr; }
+    .footer-bottom { flex-direction: column; gap: 16px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="stars"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">orbita<span>Tech</span></div>
+  <ul>
+    <li><a href="#sobre">Empresa</a></li>
+    <li><a href="#competencias">Serviços</a></li>
+    <li><a href="#profissionais">Time</a></li>
+    <li><a href="#depoimentos">Clientes</a></li>
+    <li><a href="#cta">Contato</a></li>
+  </ul>
+  <a href="#cta" class="nav-cta">Fale Conosco</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-glow"></div>
+  <div class="orbit-ring r1"></div>
+  <div class="orbit-ring r2"></div>
+  <div class="orbit-ring r3"></div>
+
+  <div class="hero-content">
+    <div class="hero-badge">
+      <div class="badge-dot"></div>
+      Inovação em Órbita
+    </div>
+    <h1 class="hero-title">
+      Tecnologia que<br>
+      <span class="accent">Orbita</span> <span class="silver">o Futuro</span>
+    </h1>
+    <p class="hero-sub">Desenvolvemos soluções tecnológicas de alta performance que impulsionam empresas a um novo patamar digital. Do código ao cosmos.</p>
+    <div class="hero-actions">
+      <a href="#competencias" class="btn-primary">Explorar Soluções</a>
+      <a href="#sobre" class="btn-outline">Sobre Nós</a>
+    </div>
+    <div class="hero-stats">
+      <div>
+        <div class="stat-num">+200</div>
+        <div class="stat-label">Projetos Entregues</div>
+      </div>
+      <div>
+        <div class="stat-num">98%</div>
+        <div class="stat-label">Satisfação</div>
+      </div>
+      <div>
+        <div class="stat-num">8</div>
+        <div class="stat-label">Anos de Mercado</div>
+      </div>
+      <div>
+        <div class="stat-num">40+</div>
+        <div class="stat-label">Especialistas</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOBRE -->
+<section id="sobre">
+  <div class="sobre-grid">
+    <div class="reveal">
+      <p class="section-label">Quem Somos</p>
+      <h2 class="section-title">Movidos pela <span class="accent">paixão</span> por tecnologia</h2>
+      <div class="divider"></div>
+      <p class="section-desc">A OrbitaTech nasceu da visão de que tecnologia bem aplicada transforma negócios. Com uma equipe multidisciplinar de alta performance, entregamos projetos que combinam inovação, robustez e design pensado para o futuro.</p>
+      <p class="section-desc" style="margin-top: 16px;">Atendemos empresas de todos os portes — de startups em aceleração a grandes corporações que buscam modernização digital com segurança e agilidade.</p>
+
+      <div class="sobre-values">
+        <div class="value-item">
+          <div class="value-icon">🚀</div>
+          <div class="value-text">
+            <strong>Missão</strong>
+            <span>Levar empresas ao próximo nível com tecnologia de ponta e execução impecável.</span>
+          </div>
+        </div>
+        <div class="value-item">
+          <div class="value-icon">🌐</div>
+          <div class="value-text">
+            <strong>Visão</strong>
+            <span>Ser referência nacional em desenvolvimento de software e transformação digital.</span>
+          </div>
+        </div>
+        <div class="value-item">
+          <div class="value-icon">💎</div>
+          <div class="value-text">
+            <strong>Valores</strong>
+            <span>Transparência, excelência técnica, entrega ágil e parceria genuína com o cliente.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reveal reveal-delay-2">
+      <div class="sobre-visual">
+        <div class="sobre-hex">
+          <div class="sobre-icon">⚡</div>
+        </div>
+        <div class="sobre-float f1">
+          <span class="num">+8</span>
+          Anos de Mercado
+        </div>
+        <div class="sobre-float f2">
+          <span class="num">ISO</span>
+          9001 Certificada
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPETÊNCIAS -->
+<section id="competencias">
+  <div class="comp-header reveal">
+    <p class="section-label">O Que Fazemos</p>
+    <h2 class="section-title">Nossas Principais <span class="accent">Competências</span></h2>
+    <div class="divider"></div>
+    <p class="section-desc">Soluções completas do planejamento à entrega, com domínio técnico em cada etapa do ciclo de desenvolvimento.</p>
+  </div>
+
+  <div class="comp-grid">
+    <!-- Card 1 -->
+    <div class="comp-card reveal reveal-delay-1">
+      <div class="comp-ico">🖥️</div>
+      <div class="comp-title">Desenvolvimento Web</div>
+      <div class="comp-desc">Sistemas web modernos, rápidos e escaláveis com as melhores tecnologias do mercado: React, Next.js, Node, Laravel e mais.</div>
+      <div class="comp-skill-bar">
+        <div class="skill-label"><span>Front-end</span><span class="pct">95%</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:95%"></div></div>
+      </div>
+      <div class="comp-skill-bar" style="margin-top:12px">
+        <div class="skill-label"><span>Back-end</span><span class="pct">92%</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:92%"></div></div>
+      </div>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="comp-card reveal reveal-delay-2">
+      <div class="comp-ico">📱</div>
+      <div class="comp-title">Apps Mobile</div>
+      <div class="comp-desc">Aplicativos nativos e híbridos para iOS e Android com UX centrada no usuário e performance nativa.</div>
+      <div class="comp-skill-bar">
+        <div class="skill-label"><span>React Native</span><span class="pct">90%</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:90%"></div></div>
+      </div>
+      <div class="comp-skill-bar" style="margin-top:12px">
+        <div class="skill-label"><span>Flutter</span><span class="pct">85%</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:85%"></div></div>
+      </div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="comp-card reveal reveal-delay-3">
+      <div class="comp-ico">☁️</div>
+      <div class="comp-title">Cloud & DevOps</div>
+      <div class="comp-desc">Infraestrutura em nuvem robusta com AWS, Azure e GCP. Pipelines CI/CD, containers Docker e Kubernetes.</div>
+      <div class="comp-skill-bar">
+        <div class="skill-label"><span>AWS / Azure</span><span class="pct">93%</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:93%"></div></div>
+      </div>
+      <div class="comp-skill-bar" style="margin-top:12px">
+        <div class="skill-label"><span>DevOps</span><span class="pct">88%</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:88%"></div></div>
+      </div>
+    </div>
+
+    <!-- Card 4 -->
+    <div class="comp-card reveal reveal-delay-1">
+      <div class="comp-ico">🤖</div>
+      <div class="comp-title">Inteligência Artificial</div>
+      <div class="comp-desc">Automação inteligente, chatbots, análise preditiva e integração de modelos de linguagem em produtos reais.</div>
+      <div class="comp-skill-bar">
+        <div class="skill-label"><span>Machine Learning</span><span class="pct">87%</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:87%"></div></div>
+      </div>
+      <div class="comp-skill-bar" style="margin-top:12px">
+        <div class="skill-label"><span>NLP / LLMs</span><span class="pct">82%</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:82%"></div></div>
+      </div>
+    </div>
+
+    <!-- Card 5 -->
+    <div class="comp-card reveal reveal-delay-2">
+      <div class="comp-ico">🔒</div>
+      <div class="comp-title">Cybersegurança</div>
+      <div class="comp-desc">Proteção de dados, auditorias de segurança, pentesting e conformidade com LGPD e normas internacionais.</div>
+      <div class="comp-skill-bar">
+        <div class="skill-label"><span>Segurança</span><span class="pct">91%</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:91%"></div></div>
+      </div>
+      <div class="comp-skill-bar" style="margin-top:12px">
+        <div class="skill-label"><span>Conformidade</span><span class="pct">94%</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:94%"></div></div>
+      </div>
+    </div>
+
+    <!-- Card 6 -->
+    <div class="comp-card reveal reveal-delay-3">
+      <div class="comp-ico">📊</div>
+      <div class="comp-title">Business Intelligence</div>
+      <div class="comp-desc">Dashboards, data warehouses e pipelines de dados que transformam informação bruta em decisões estratégicas.</div>
+      <div class="comp-skill-bar">
+        <div class="skill-label"><span>Análise de Dados</span><span class="pct">89%</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:89%"></div></div>
+      </div>
+      <div class="comp-skill-bar" style="margin-top:12px">
+        <div class="skill-label"><span>Visualização</span><span class="pct">86%</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:86%"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROFISSIONAIS -->
+<section id="profissionais">
+  <div class="prof-header reveal">
+    <p class="section-label">Nosso Time</p>
+    <h2 class="section-title">Os <span class="accent">Profissionais</span> por Trás da Órbita</h2>
+    <div class="divider"></div>
+    <p class="section-desc">Uma equipe de especialistas apaixonados por tecnologia, entrega e resultado.</p>
+  </div>
+
+  <div class="prof-grid">
+    <div class="prof-card reveal reveal-delay-1">
+      <div class="prof-avatar">🧑‍💼<div class="prof-badge-role">CEO & Fundador</div></div>
+      <div class="prof-info">
+        <div class="prof-name">Rafael Orbita</div>
+        <div class="prof-role">Chief Executive Officer</div>
+        <div class="prof-tags">
+          <span class="tag">Visão Estratégica</span>
+          <span class="tag">Tech Leader</span>
+          <span class="tag">Startups</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="prof-card reveal reveal-delay-2">
+      <div class="prof-avatar">👩‍💻<div class="prof-badge-role">Tech Lead</div></div>
+      <div class="prof-info">
+        <div class="prof-name">Ana Cavalcanti</div>
+        <div class="prof-role">Lead Software Engineer</div>
+        <div class="prof-tags">
+          <span class="tag">React</span>
+          <span class="tag">Node.js</span>
+          <span class="tag">AWS</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="prof-card reveal reveal-delay-3">
+      <div class="prof-avatar">🧑‍🔬<div class="prof-badge-role">Data Science</div></div>
+      <div class="prof-info">
+        <div class="prof-name">Lucas Mendes</div>
+        <div class="prof-role">AI & Data Scientist</div>
+        <div class="prof-tags">
+          <span class="tag">Machine Learning</span>
+          <span class="tag">Python</span>
+          <span class="tag">LLMs</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="prof-card reveal reveal-delay-4">
+      <div class="prof-avatar">👩‍🎨<div class="prof-badge-role">Design Lead</div></div>
+      <div class="prof-info">
+        <div class="prof-name">Carla Viana</div>
+        <div class="prof-role">UX/UI Design Lead</div>
+        <div class="prof-tags">
+          <span class="tag">Figma</span>
+          <span class="tag">UX Research</span>
+          <span class="tag">Design Systems</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEPOIMENTOS -->
+<section id="depoimentos">
+  <div class="dep-header reveal">
+    <p class="section-label">Depoimentos</p>
+    <h2 class="section-title">O Que Nossos <span class="accent">Clientes</span> Dizem</h2>
+    <div class="divider"></div>
+    <p class="section-desc">A satisfação de quem confia na OrbitaTech fala mais do que qualquer promessa.</p>
+  </div>
+
+  <div class="dep-grid">
+    <div class="dep-card reveal reveal-delay-1">
+      <div class="dep-quote">"</div>
+      <p class="dep-text">A OrbitaTech transformou completamente a nossa plataforma digital. Em 4 meses, entregaram um sistema que nossa equipe interna levaria anos para concluir. Profissionalismo impecável.</p>
+      <div class="dep-author">
+        <div class="dep-ava">MC</div>
+        <div>
+          <div class="dep-name">Marcos Costa</div>
+          <div class="dep-company">CEO — Fintera Soluções</div>
+          <div class="stars-rating">★★★★★</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dep-card reveal reveal-delay-2">
+      <div class="dep-quote">"</div>
+      <p class="dep-text">Contratamos a OrbitaTech para modernizar nossa infraestrutura em cloud. Resultado: 60% de redução nos custos de servidor e tempo de resposta 3x mais rápido. Recomendo sem reservas.</p>
+      <div class="dep-author">
+        <div class="dep-ava">JS</div>
+        <div>
+          <div class="dep-name">Juliana Souza</div>
+          <div class="dep-company">CTO — LogiFlow Brasil</div>
+          <div class="stars-rating">★★★★★</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dep-card reveal reveal-delay-3">
+      <div class="dep-quote">"</div>
+      <p class="dep-text">O app que a OrbitaTech desenvolveu para nós foi premiado no setor. A equipe deles realmente entende de UX e entrega tecnologia que o usuário final ama usar. Parceiros para sempre.</p>
+      <div class="dep-author">
+        <div class="dep-ava">PR</div>
+        <div>
+          <div class="dep-name">Pedro Rocha</div>
+          <div class="dep-company">Founder — HealthTrack App</div>
+          <div class="stars-rating">★★★★★</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <div class="cta-glow"></div>
+  <div class="cta-content reveal">
+    <p class="section-label" style="text-align:center">Pronto para Decolar?</p>
+    <h2 class="cta-title">Vamos Construir o Próximo <span class="accent">Grande Projeto</span> Juntos</h2>
+    <p class="cta-desc">Deixe seu contato e um especialista OrbitaTech entrará em contato em até 24 horas para entender como podemos alavancar o seu negócio.</p>
+    <div class="cta-form">
+      <input type="email" class="cta-input" placeholder="Seu melhor e-mail">
+      <a href="#" class="btn-primary" style="white-space:nowrap">Entrar em Órbita</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="logo-text">orbita<span>Tech</span></div>
+      <p>Tecnologia de alta performance para empresas que desejam liderar o futuro digital com inovação, segurança e excelência.</p>
+      <div class="footer-socials">
+        <a href="#" class="social-btn">in</a>
+        <a href="#" class="social-btn">tw</a>
+        <a href="#" class="social-btn">gh</a>
+        <a href="#" class="social-btn">ig</a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Serviços</h4>
+      <ul>
+        <li><a href="#">Desenvolvimento Web</a></li>
+        <li><a href="#">Apps Mobile</a></li>
+        <li><a href="#">Cloud & DevOps</a></li>
+        <li><a href="#">Inteligência Artificial</a></li>
+        <li><a href="#">Cybersegurança</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Empresa</h4>
+      <ul>
+        <li><a href="#">Sobre Nós</a></li>
+        <li><a href="#">Nosso Time</a></li>
+        <li><a href="#">Cases de Sucesso</a></li>
+        <li><a href="#">Blog Tech</a></li>
+        <li><a href="#">Carreiras</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contato</h4>
+      <ul>
+        <li><a href="#">contato@orbitatech.com.br</a></li>
+        <li><a href="#">(62) 9 9999-0000</a></li>
+        <li><a href="#">Goiânia — GO</a></li>
+        <li><a href="#">Suporte 24/7</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p>© 2026 <span class="blue">OrbitaTech</span>. Todos os direitos reservados.</p>
+    <div class="footer-legal">
+      <a href="#">Política de Privacidade</a>
+      <a href="#">Termos de Uso</a>
+      <a href="#">LGPD</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Scroll reveal
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+  }, { threshold: 0.12 });
+  reveals.forEach(el => observer.observe(el));
+
+  // Animated skill bars on enter
+  const bars = document.querySelectorAll('.bar-fill');
+  const barObserver = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const w = e.target.style.width;
+        e.target.style.width = '0';
+        setTimeout(() => { e.target.style.transition = 'width 1.2s cubic-bezier(.4,0,.2,1)'; e.target.style.width = w; }, 100);
+        barObserver.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.5 });
+  bars.forEach(b => { const w = b.style.width; b.style.width = '0'; barObserver.observe(b); });
+</script>
+</body>
+</html>
